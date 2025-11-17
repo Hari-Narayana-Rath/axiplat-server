@@ -120,15 +120,20 @@ echo.
 call venv\Scripts\activate.bat
 REM Try to upgrade pip, but don't fail if it doesn't work
 python -m pip install --upgrade pip --quiet 2>nul || echo [INFO] Pip upgrade skipped
-pip install -r requirements.txt --quiet
 
+REM Install dependencies, but skip dlib if it fails (not required for age gate)
+echo [INFO] Installing core dependencies...
+pip install Flask==2.2.5 flask-cors==4.0.0 opencv-python==4.8.1.78 mediapipe==0.10.11 numpy==1.26.4 --quiet
 if errorlevel 1 (
-    echo [ERROR] Failed to install dependencies.
+    echo [ERROR] Failed to install core dependencies.
     echo.
     echo Please check your internet connection and try again.
     pause
     exit /b 1
 )
+
+echo [INFO] Installing optional dependencies...
+pip install scikit-learn==1.3.2 joblib==1.3.2 pandas==2.2.3 --quiet 2>nul || echo [INFO] Some optional packages failed, continuing...
 
 echo [OK] Dependencies installed
 echo.

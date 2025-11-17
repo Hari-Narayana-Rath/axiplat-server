@@ -104,14 +104,21 @@ else
     source venv/bin/activate
     # Try to upgrade pip, but don't fail if it doesn't work
     python3 -m pip install --upgrade pip --quiet 2>/dev/null || true
-    pip install -r requirements.txt --quiet
+    
+    # Install core dependencies first (required for age gate)
+    echo "[INFO] Installing core dependencies..."
+    pip install Flask==2.2.5 flask-cors==4.0.0 opencv-python==4.8.1.78 mediapipe==0.10.11 numpy==1.26.4 --quiet
     
     if [ $? -ne 0 ]; then
-        echo "[ERROR] Failed to install dependencies."
+        echo "[ERROR] Failed to install core dependencies."
         echo ""
         echo "Please check your internet connection and try again."
         exit 1
     fi
+    
+    # Install optional dependencies (skip if they fail)
+    echo "[INFO] Installing optional dependencies..."
+    pip install scikit-learn==1.3.2 joblib==1.3.2 pandas==2.2.3 --quiet 2>/dev/null || echo "[INFO] Some optional packages failed, continuing..."
     
     echo "[OK] Dependencies installed"
     echo ""

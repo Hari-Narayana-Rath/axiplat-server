@@ -70,7 +70,12 @@ if errorlevel 1 exit /b 1
 call venv\Scripts\activate.bat
 REM Try to upgrade pip, but don't fail if it doesn't work
 python -m pip install --upgrade pip --quiet >nul 2>&1
-pip install -r requirements.txt --quiet >nul 2>&1
+
+REM Install dependencies, but skip dlib if it fails (not required for age gate)
+REM Install core dependencies first
+python -m pip install Flask==2.2.5 flask-cors==4.0.0 opencv-python==4.8.1.78 mediapipe==0.10.11 numpy==1.26.4 --quiet >nul 2>&1
+REM Install optional dependencies (skip if they fail)
+python -m pip install scikit-learn==1.3.2 joblib==1.3.2 pandas==2.2.3 --quiet >nul 2>&1
 
 :start_server_hidden
 REM Run server completely hidden using VBS
