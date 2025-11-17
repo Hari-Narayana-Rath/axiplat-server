@@ -102,7 +102,8 @@ else
     echo ""
     
     source venv/bin/activate
-    pip install --upgrade pip --quiet
+    # Try to upgrade pip, but don't fail if it doesn't work
+    python3 -m pip install --upgrade pip --quiet 2>/dev/null || true
     pip install -r requirements.txt --quiet
     
     if [ $? -ne 0 ]; then

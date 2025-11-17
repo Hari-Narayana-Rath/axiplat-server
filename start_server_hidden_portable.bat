@@ -68,7 +68,8 @@ python -m venv venv >nul 2>&1
 if errorlevel 1 exit /b 1
 
 call venv\Scripts\activate.bat
-pip install --upgrade pip --quiet >nul 2>&1
+REM Try to upgrade pip, but don't fail if it doesn't work
+python -m pip install --upgrade pip --quiet >nul 2>&1
 pip install -r requirements.txt --quiet >nul 2>&1
 
 :start_server_hidden

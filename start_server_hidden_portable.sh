@@ -84,7 +84,8 @@ if [ ! -d "venv" ]; then
     fi
     
     source venv/bin/activate
-    pip install --upgrade pip --quiet > /dev/null 2>&1
+    # Try to upgrade pip, but don't fail if it doesn't work
+    python3 -m pip install --upgrade pip --quiet > /dev/null 2>&1 || true
     pip install -r requirements.txt --quiet > /dev/null 2>&1
 fi
 

@@ -118,7 +118,8 @@ echo This may take a few minutes on first run...
 echo.
 
 call venv\Scripts\activate.bat
-pip install --upgrade pip --quiet
+REM Try to upgrade pip, but don't fail if it doesn't work
+python -m pip install --upgrade pip --quiet 2>nul || echo [INFO] Pip upgrade skipped
 pip install -r requirements.txt --quiet
 
 if errorlevel 1 (
