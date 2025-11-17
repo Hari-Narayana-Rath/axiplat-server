@@ -115,9 +115,17 @@ Portable launcher scripts that automatically set up and run the Age Gate server.
 - Verify GitHub is accessible
 - Try running the launcher from within the project folder instead
 
+### "Failed building wheel for dlib" or CMake errors
+- **This is normal and safe to ignore!** The launcher now installs dependencies in two stages:
+  - Core dependencies (Flask, OpenCV, MediaPipe) - **required**
+  - Optional dependencies (scikit-learn, pandas) - **not required for age gate**
+- If you see dlib/CMake errors, the launcher will continue and the server will still work
+- The age gate uses MediaPipe and OpenCV, which don't require dlib or CMake
+- Only install CMake if you specifically need scikit-learn features
+
 ### Server won't start
 - Check if port 5000 is already in use
-- Make sure all dependencies installed correctly
+- Make sure core dependencies installed correctly (Flask, OpenCV, MediaPipe)
 - Check Python version (3.7+ required)
 
 ## 📝 Notes
