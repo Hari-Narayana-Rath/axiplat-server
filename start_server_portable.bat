@@ -1,19 +1,16 @@
 @echo off
-REM AXIPLAT - Portable Standalone Launcher (Windows)
-REM This script can run from anywhere and will set up everything automatically
+REM Portable Windows launcher (auto setup anywhere)
 
 setlocal enabledelayedexpansion
 
-REM Get the directory where this batch file is located
 set "BAT_DIR=%~dp0"
 cd /d "%BAT_DIR%"
 
 echo ========================================
-echo AXIPLAT - Portable Launcher
+echo AXIPLAT Server - Portable Launcher
 echo ========================================
 echo.
 
-REM Check if Python is installed
 python --version >nul 2>&1
 if errorlevel 1 (
     echo [ERROR] Python is not installed or not in PATH.
@@ -28,18 +25,15 @@ if errorlevel 1 (
 echo [OK] Python found
 echo.
 
-REM Check if we're in a project folder (has app.py)
 if exist "app.py" (
     echo [OK] Project folder detected
     set "PROJECT_DIR=%BAT_DIR%"
     goto :setup_server
 )
 
-REM Not in project folder - check if we should clone/download
 echo [INFO] Not in project folder. Setting up...
 echo.
 
-REM Option 1: Check if there's a project folder nearby
 if exist "..\app.py" (
     echo [OK] Found project folder in parent directory
     set "PROJECT_DIR=%~dp0.."
@@ -47,11 +41,9 @@ if exist "..\app.py" (
     goto :setup_server
 )
 
-REM Option 2: Clone from GitHub
 echo [INFO] Cloning project from GitHub...
 echo.
 
-REM Check if git is available
 git --version >nul 2>&1
 if errorlevel 1 (
     echo [ERROR] Git is not installed.
@@ -64,25 +56,30 @@ if errorlevel 1 (
     exit /b 1
 )
 
-REM Clone the repository
 set "REPO_URL=https://github.com/Hari-Narayana-Rath/axiplat.git"
-set "CLONE_DIR=age_gate_server"
+set "CLONE_DIR=axiplat_server"
+set "LEGACY_CLONE_DIR=age_gate_server"
 
 if exist "%CLONE_DIR%" (
     echo [INFO] Folder %CLONE_DIR% already exists, using it...
     set "PROJECT_DIR=%BAT_DIR%%CLONE_DIR%"
 ) else (
-    echo [INFO] Cloning repository...
-    git clone %REPO_URL% %CLONE_DIR%
-    if errorlevel 1 (
-        echo [ERROR] Failed to clone repository.
-        echo.
-        echo Please check your internet connection and try again.
-        echo.
-        pause
-        exit /b 1
+    if exist "%LEGACY_CLONE_DIR%" (
+        echo [INFO] Found legacy folder %LEGACY_CLONE_DIR%, using it...
+        set "PROJECT_DIR=%BAT_DIR%%LEGACY_CLONE_DIR%"
+    ) else (
+        echo [INFO] Cloning repository...
+        git clone %REPO_URL% %CLONE_DIR%
+        if errorlevel 1 (
+            echo [ERROR] Failed to clone repository.
+            echo.
+            echo Please check your internet connection and try again.
+            echo.
+            pause
+            exit /b 1
+        )
+        set "PROJECT_DIR=%BAT_DIR%%CLONE_DIR%"
     )
-    set "PROJECT_DIR=%BAT_DIR%%CLONE_DIR%"
 )
 
 echo [OK] Project cloned successfully
@@ -94,13 +91,11 @@ cd /d "!PROJECT_DIR!"
 echo [INFO] Setting up server in: !PROJECT_DIR!
 echo.
 
-REM Check if virtual environment exists
 if exist "venv\Scripts\activate.bat" (
     echo [OK] Virtual environment found
     goto :start_server
 )
 
-REM Create virtual environment
 echo [INFO] Creating virtual environment...
 python -m venv venv
 if errorlevel 1 (
@@ -112,16 +107,13 @@ if errorlevel 1 (
 echo [OK] Virtual environment created
 echo.
 
-REM Install dependencies
 echo [INFO] Installing dependencies...
 echo This may take a few minutes on first run...
 echo.
 
 call venv\Scripts\activate.bat
-REM Try to upgrade pip, but don't fail if it doesn't work
 python -m pip install --upgrade pip --quiet 2>nul || echo [INFO] Pip upgrade skipped
 
-REM Install dependencies, but skip dlib if it fails (not required for age gate)
 echo [INFO] Installing core dependencies...
 pip install Flask==2.2.5 flask-cors==4.0.0 opencv-python==4.8.1.78 mediapipe==0.10.11 numpy==1.26.4 --quiet
 if errorlevel 1 (
@@ -148,7 +140,6 @@ echo Press Ctrl+C in this window to stop the server.
 echo (Or close this window)
 echo.
 
-REM Start server (visible window for now - user can minimize)
 call venv\Scripts\activate.bat
 python app.py
 
