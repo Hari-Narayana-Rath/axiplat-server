@@ -1,5 +1,5 @@
 @echo off
-REM Age Gate Server - Portable Standalone Launcher (Windows)
+REM AXIPLAT - Portable Standalone Launcher (Windows)
 REM This script can run from anywhere and will set up everything automatically
 
 setlocal enabledelayedexpansion
