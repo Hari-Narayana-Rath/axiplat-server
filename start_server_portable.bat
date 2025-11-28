@@ -9,7 +9,7 @@ set "BAT_DIR=%~dp0"
 cd /d "%BAT_DIR%"
 
 echo ========================================
-echo Age Gate Server - Portable Launcher
+echo AXIPLAT - Portable Launcher
 echo ========================================
 echo.
 
